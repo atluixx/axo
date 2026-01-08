@@ -1,0 +1,14 @@
+{
+  "name": "axo",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "baileys": "^7.0.0-rc.9",
+    "pino": "^10.1.0"
+  }
+}
