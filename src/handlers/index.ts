@@ -1,7 +1,7 @@
 import { getContentType, type WAMessage, type MessageUpsertType } from "baileys";
 import { logger } from "@/utils";
-import { message } from "./message";
-import { media } from "./media";
+import { message } from "@/handlers/message";
+import { media } from "@/handlers/media";
 
 export const handlers_logger = logger.child({ module: "handlers" });
 type MessageHandlerType = {
@@ -9,10 +9,10 @@ type MessageHandlerType = {
   type: MessageUpsertType
 }
 
-export const main_handler = ({
+export const main_handler = async ({
   messages,
   type
-}: MessageHandlerType): void => {
+}: MessageHandlerType): Promise<void> => {
   if (type !== "notify") return;
 
   for (const m of messages) {

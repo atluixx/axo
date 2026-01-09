@@ -1,12 +1,22 @@
-import { type WAMessage } from "baileys";
+import { jidNormalizedUser, type WAMessage } from "baileys";
 import { handlers_logger } from ".";
+import { skt } from "..";
 
-export const message = ({ m }: { m: WAMessage }): void => {
-  const text = m.message?.conversation ?? m.message?.extendedTextMessage?.text;
-  const is_group = m.key.remoteJid?.endsWith("@g.us");
-  const jid = is_group ? m.key.participant : m.key.remoteJid;
-  const sender = m.pushName || jid;
+export const message = async ({ m }: { m: WAMessage }): Promise<void> => {
+  const chat_jid = m.key.remoteJid!;
+  const is_group = chat_jid.endsWith("@g.us");
+  const text =
+    m.message?.conversation ??
+    m.message?.extendedTextMessage?.text ??
+    "";
 
-  handlers_logger.info({ text, sender, group: is_group }, "message received");
+  const sender_jid = jidNormalizedUser(m.key.participant ?? chat_jid);
+  const sender_name = m.pushName || sender_jid.split("@")[0];
+
+  const group_name = is_group
+    ? (await skt.groupMetadata(chat_jid)).subject
+    : "DMs";
+
+  handlers_logger.info({ text, sender: `${sender_name} (${sender_jid})`, group: `${is_group} | ${group_name}` }, "message received");
 };
 

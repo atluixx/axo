@@ -1,7 +1,7 @@
 import type { WAMessage } from "baileys";
 import { handlers_logger } from ".";
 
-export const media = ({ m }: { m: WAMessage }) => {
+export const media = async ({ m }: { m: WAMessage }): Promise<void> => {
   const data = m.message?.imageMessage || m.message?.videoMessage || m.message?.audioMessage || m.message?.documentMessage || m.message?.stickerMessage;
   if (!data) return handlers_logger.info("media not found.");
 

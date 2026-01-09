@@ -7,7 +7,7 @@ type Row = {
   value: string;
 };
 
-const db = new Database("./axo.db");
+export const db = new Database("./axo.db");
 db.run("PRAGMA journal_mode = WAL;");
 db.run(`
   CREATE TABLE IF NOT EXISTS wa_auth (
