@@ -8,7 +8,7 @@ export const logger = pino(
     target: "pino-pretty",
     options: {
       colorize: true,
-      messageFormat: ":: [{time}] {level} ({module}): {msg}",
+      messageFormat: "({module}): {msg}",
       translateTime: "HH:MM:ss",
       ignore: "pid,hostname",
     },
