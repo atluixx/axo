@@ -8,6 +8,7 @@ type Row = {
 };
 
 export const db = new Database("./axo.db");
+
 db.run("PRAGMA journal_mode = WAL;");
 db.run(`
   CREATE TABLE IF NOT EXISTS wa_auth (
@@ -15,6 +16,15 @@ db.run(`
     value TEXT NOT NULL
   )
 `);
+
+db.run(`state
+   CREATE TABLE IF NOT EXISTS muted_users (
+      user TEXT PRIMARY KEY,
+      muted_until BIGINT NOT NULL,
+      reason TEXT NOT NULL
+   )
+`)
+
 
 export const use_sqlite_auth = async () => {
   const row = db

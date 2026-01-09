@@ -3,8 +3,10 @@ import { process_metadata } from "@/auth";
 import { connection_update } from "@/events";
 import { use_sqlite_auth } from "@/database";
 import pino from "pino";
+import { db } from "@/database";
 import { main_handler } from "@/handlers";
-import type { Axo, Command } from "@/utils/axo";
+import type { Axo, Command, MutedUser } from "@/utils/axo";
+import { start_cron_jobs } from "./jobs";
 
 const { state, save_creds } = await use_sqlite_auth();
 
@@ -19,13 +21,18 @@ export const start_socket = async () => {
     cachedGroupMetadata: (jid: string) => process_metadata(jid),
   });
 
-  const commands: Record<string, Command> = {};
-  const timeouts: Record<string, number> = {};
+  const commands: Map<string, Command> = new Map();
+  const timeouts: Map<string, number> = new Map();
+
+  const muteds = db.query(`SELECT * FROM muted_users`).all() as MutedUser[];
 
   axo = {
-    socket: skt,
     commands,
-    timeouts
+    timeouts,
+    muteds,
+    socket: skt,
+    prefix: "-",
+    default_example: "@luiz",
   };
 
   skt.ev.on("messages.upsert", async ({ messages, type }) => await main_handler({ messages, type }));
@@ -39,3 +46,4 @@ console.info = noop;
 console.warn = noop;
 
 await start_socket();
+await start_cron_jobs();
