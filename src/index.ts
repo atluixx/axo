@@ -9,6 +9,7 @@ import type { Axo, Command } from "@/utils/axo";
 const { state, save_creds } = await use_sqlite_auth();
 
 export let skt: ReturnType<typeof makeWASocket>;
+export let axo: Axo;
 
 export const start_socket = async () => {
   skt = makeWASocket({
@@ -19,10 +20,12 @@ export const start_socket = async () => {
   });
 
   const commands: Record<string, Command> = {};
+  const timeouts: Record<string, number> = {};
 
-  const axo: Axo = {
+  axo = {
     socket: skt,
     commands,
+    timeouts
   };
 
   skt.ev.on("messages.upsert", async ({ messages, type }) => await main_handler({ messages, type }));

@@ -18,5 +18,6 @@ export type Command = {
 
 export interface Axo {
   commands: Record<string, Command>,
-  socket: WASocket
+  socket: WASocket,
+  timeouts: Record<string, number>
 }
