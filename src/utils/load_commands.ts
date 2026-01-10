@@ -1,10 +1,10 @@
 import path from "path";
 import fs from "fs";
-import type { Axo, Command } from "./axo";
+import type { Axo, Command } from ".";
 import { pathToFileURL } from "bun";
 import { command_logger } from ".";
 
-const commands_folder = path.resolve("./commands");
+const commands_folder = path.resolve(path.join(__dirname, "../commands"));
 
 export const load_commands_recursive = async ({ dir = commands_folder, axo }: { dir?: string; axo: Axo }) => {
   const files = fs.readdirSync(dir, { withFileTypes: true });
