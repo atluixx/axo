@@ -1,14 +1,13 @@
 import type { Boom } from "@hapi/boom";
 import { DisconnectReason, type ConnectionState } from "baileys";
 import qrcode from "qrcode-terminal";
-import { start_socket } from "@/index"
+import { start_socket } from "@/index";
 import { logger } from "@/utils";
 
 let qr_shown: boolean = false;
 const events_logger = logger.child({ module: "events" });
 
 export const connection_update = async (update: Partial<ConnectionState>): Promise<void> => {
-
   const { qr, connection, lastDisconnect } = update;
 
   if (connection === "close") {
@@ -32,4 +31,4 @@ export const connection_update = async (update: Partial<ConnectionState>): Promi
   }
 
   return;
-}
+};

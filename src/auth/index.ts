@@ -6,9 +6,9 @@ export const process_metadata = async (jid: string): Promise<GroupMetadata | und
   if (!raw) return undefined;
 
   try {
-    return JSON.parse(raw) as GroupMetadata
+    return JSON.parse(raw) as GroupMetadata;
   } catch {
     await redis.del(jid);
     return undefined;
   }
-}
+};
