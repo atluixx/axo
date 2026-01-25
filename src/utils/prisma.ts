@@ -1,14 +1,17 @@
-import "dotenv/config";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { BufferJSON, initAuthCreds } from "baileys";
+import { config } from "dotenv";
+import { Pool } from "pg";
 import { PrismaClient } from "@/prisma/generated/prisma";
 
-const adapter = new PrismaBetterSqlite3({
-  url: process.env.DATABASE_URL || "file:../../axo.db",
-});
+config({ path: `${__dirname}/../.env` });
+
+const connectionString = process.env.DATABASE_URL;
+
+const pool = new Pool({ connectionString });
+const adapter = new PrismaPg(pool);
 
 export const prisma = new PrismaClient({ adapter });
-
 export const use_prisma_auth = async () => {
   const row = await prisma.waAuth.findUnique({
     where: { key: "creds" },

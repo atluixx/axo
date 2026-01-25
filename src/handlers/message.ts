@@ -24,8 +24,6 @@ const message_handler = async ({
 
   const normalized = text.trim();
 
-  handlers_logger.info(normalized);
-
   if (normalized.startsWith(axo.prefix)) {
     const withoutPrefix = normalized.slice(axo.prefix.length).trim();
 
@@ -36,8 +34,6 @@ const message_handler = async ({
       m,
       text: withoutPrefix,
     });
-
-    handlers_logger.info({ withoutPrefix }, "command handler");
 
     return;
   }

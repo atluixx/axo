@@ -1,10 +1,6 @@
+/** biome-ignore-all lint/style/noNonNullAssertion: ... */
 import type { WAMessage } from "baileys";
-import {
-  type Axo,
-  type Command,
-  command_logger,
-  CommandPermissions,
-} from "@/utils";
+import { type Axo, type Command, CommandPermissions } from "@/utils";
 
 export default {
   name: "unmute",

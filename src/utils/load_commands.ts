@@ -1,12 +1,18 @@
-import path from "path";
-import fs from "fs";
+import fs from "node:fs";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
 import type { Axo, Command } from ".";
-import { pathToFileURL } from "bun";
 import { command_logger } from ".";
 
 const commands_folder = path.resolve(path.join(__dirname, "../commands"));
 
-export const load_commands_recursive = async ({ dir = commands_folder, axo }: { dir?: string; axo: Axo }) => {
+export const load_commands_recursive = async ({
+  dir = commands_folder,
+  axo,
+}: {
+  dir?: string;
+  axo: Axo;
+}) => {
   const files = fs.readdirSync(dir, { withFileTypes: true });
 
   for (const file of files) {
@@ -34,9 +40,15 @@ export const load_commands_recursive = async ({ dir = commands_folder, axo }: { 
         }
       }
 
-      command_logger.info({ module: "command loader", name: command.name.toLowerCase() }, "command loaded");
+      command_logger.info(
+        { module: "command loader", name: command.name.toLowerCase() },
+        "command loaded",
+      );
     } catch (err) {
-      command_logger.error({ module: "command loader", error: err, path: fullPath }, "failed to load command");
+      command_logger.error(
+        { module: "command loader", error: err, path: fullPath },
+        "failed to load command",
+      );
     }
   }
 };

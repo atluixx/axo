@@ -24,14 +24,10 @@ export const main_handler = async ({
     if (!m.message) continue;
     if (m.key.fromMe) continue;
 
-    handlers_logger.info("1");
-
     const content = m.message.ephemeralMessage?.message ?? m.message;
 
     const contentType = getContentType(content);
     if (!contentType) continue;
-
-    handlers_logger.info("2");
 
     let text: string | null | undefined;
 
@@ -53,8 +49,6 @@ export const main_handler = async ({
         text = content.videoMessage?.caption;
         break;
     }
-
-    handlers_logger.info(text);
 
     if (text) {
       await message_handler({ m, text });

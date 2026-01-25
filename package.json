@@ -17,12 +17,20 @@
     "@adiwajshing/keyed-db": "^0.2.4",
     "@hapi/boom": "^10.0.1",
     "@prisma/adapter-better-sqlite3": "^7.3.0",
+    "@prisma/adapter-pg": "^7.3.0",
     "@prisma/client": "^7.3.0",
+    "@types/pg": "^8.16.0",
     "@types/qrcode-terminal": "^0.12.2",
     "baileys": "^7.0.0-rc.9",
     "dotenv": "^17.2.3",
+    "ioredis": "^5.9.2",
+    "module-alias": "^2.2.3",
+    "pg": "^8.17.2",
     "pino": "^10.1.0",
     "prisma": "^7.3.0",
     "qrcode-terminal": "^0.12.0"
+  },
+  "_moduleAliases": {
+    "@": "dist"
   }
 }

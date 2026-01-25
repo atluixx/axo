@@ -1,0 +1,15 @@
+import Redis from "ioredis";
+import { logger } from "./loggers";
+
+export const redis = new Redis({
+  host: "127.0.0.1",
+  port: 6379,
+});
+
+redis.on("connect", () => {
+  logger.info("redis connected");
+});
+
+redis.on("error", () => {
+  logger.error("redis error");
+});

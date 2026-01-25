@@ -61,3 +61,8 @@ export const start_socket = async () => {
 };
 
 start_socket();
+
+console.log = () => {};
+console.error = () => {};
+console.warn = () => {};
+console.info = () => {};
