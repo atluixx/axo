@@ -1,0 +1,247 @@
+generator client {
+  provider      = "prisma-client-js"
+  output        = "./generated/prisma"
+
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model WaAuth {
+  key   String @id
+  value String
+}
+
+enum Permission {
+  ADMIN
+  GROUP_ADMIN
+  USER
+}
+
+model User {
+  jid        String     @id
+  name       String
+  permission Permission @default(USER)
+}
+
+enum PlayerClass {
+  WARRIOR
+  MAGE
+  ROGUE
+  HUNTER
+  HEALER
+}
+
+model Player {
+  jid          String       @id
+  class        PlayerClass?
+  level        Int          @default(1)
+  xp           Int          @default(0)
+  gold         Int          @default(0)
+  strength     Int          @default(1)
+  agility      Int          @default(1)
+  intelligence Int          @default(1)
+  health       Int          @default(100)
+  maxHealth    Int          @default(100)
+  hunger       Int          @default(100)
+  thirst       Int          @default(100)
+  stamina      Int          @default(100)
+  reputation   Int          @default(0)
+  familyId     String?
+  createdAt    DateTime     @default(now())
+}
+
+model MutedUser {
+  jid         String @id
+  muted_until BigInt
+  reason      String @default("Desobedeceu o papai")
+
+  @@index([muted_until])
+}
+
+enum ItemType {
+  WEAPON
+  ARMOR
+  POTION
+  GUN
+  SHIELD
+  FOOD
+  WATER
+  MISC
+}
+
+model Item {
+  id     String   @id @default(cuid())
+  name   String
+  type   ItemType
+  power  Int
+  rarity Int      @default(1)
+  price  Int      @default(0)
+}
+
+model InventoryItem {
+  playerJid String
+  itemId    String
+  quantity  Int    @default(1)
+
+  @@id([playerJid, itemId])
+  @@index([itemId])
+}
+
+model EquippedItem {
+  playerJid String
+  itemId    String
+
+  @@id([playerJid, itemId])
+}
+
+model Enemy {
+  id         String @id @default(cuid())
+  name       String
+  hp         Int
+  attack     Int
+  rewardXp   Int
+  rewardGold Int
+}
+
+model Duel {
+  id          String  @id @default(cuid())
+  attackerJid String
+  defenderJid String
+  winnerJid   String?
+  wagerGold   Int     @default(0)
+  timestamp   BigInt  @default(0)
+  completed   Boolean @default(false)
+}
+
+model Quest {
+  id          String @id @default(cuid())
+  title       String
+  description String
+  goal        String
+  rewardXp    Int
+  rewardGold  Int
+}
+
+model PlayerQuest {
+  playerJid String
+  questId   String
+  completed Boolean @default(false)
+  progress  Int     @default(0)
+
+  @@id([playerJid, questId])
+}
+
+model Guild {
+  id       String @id @default(cuid())
+  name     String
+  ownerJid String
+}
+
+model GuildMember {
+  guildId   String
+  playerJid String
+
+  @@id([guildId, playerJid])
+}
+
+model Family {
+  id         String @id @default(cuid())
+  name       String
+  founderJid String
+}
+
+model FamilyMember {
+  familyId  String
+  playerJid String
+
+  @@id([familyId, playerJid])
+}
+
+model Friend {
+  playerJid String
+  friendJid String
+
+  @@id([playerJid, friendJid])
+}
+
+enum PetType {
+  DOG
+  CAT
+  DRAGON
+  FAIRY
+  WOLF
+  GRIFFIN
+}
+
+model Pet {
+  id        String   @id @default(cuid())
+  playerJid String
+  name      String
+  type      PetType
+  level     Int      @default(1)
+  xp        Int      @default(0)
+  loyalty   Int      @default(100)
+  health    Int      @default(100)
+  hunger    Int      @default(100)
+  createdAt DateTime @default(now())
+}
+
+model Achievement {
+  id          String @id @default(cuid())
+  name        String
+  description String
+}
+
+model PlayerAchievement {
+  playerJid     String
+  achievementId String
+
+  @@id([playerJid, achievementId])
+}
+
+model DailyReward {
+  jid       String @id
+  lastClaim BigInt
+}
+
+model Skill {
+  id          String @id @default(cuid())
+  name        String
+  description String
+  maxLevel    Int    @default(10)
+}
+
+model PlayerSkill {
+  playerJid String
+  skillId   String
+  level     Int    @default(1)
+
+  @@id([playerJid, skillId])
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  rewardXp    Int
+  rewardGold  Int
+  chance      Float
+  createdAt   DateTime @default(now())
+}
+
+model Shop {
+  id          String @id @default(cuid())
+  name        String
+  description String
+}
+
+model ShopItem {
+  shopId   String
+  itemId   String
+  quantity Int    @default(1)
+  price    Int    @default(0)
+
+  @@id([shopId, itemId])
+}

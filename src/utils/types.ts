@@ -1,6 +1,6 @@
 import type { makeInMemoryStore } from "@adiwajshing/baileys";
 import type { WAMessage, WASocket } from "baileys";
-import Database from "bun:sqlite";
+import type { PrismaClient } from "@/prisma/generated/prisma";
 
 export type MessageType = {
   m: WAMessage;
@@ -16,8 +16,8 @@ export enum CommandPermissions {
 }
 
 export type MutedUser = {
-  user: string;
-  muted_until: string;
+  jid: string;
+  muted_until: bigint;
   reason: string;
 };
 
@@ -31,13 +31,21 @@ export interface Command {
 }
 
 export interface Axo {
-  find: ({ axo, m, t }: { m: WAMessage; t: string; axo: Axo }) => string | undefined;
+  find: ({
+    axo,
+    m,
+    t,
+  }: {
+    m: WAMessage;
+    t: string;
+    axo: Axo;
+  }) => string | undefined;
   commands: Map<string, Command>;
   timeouts: Map<string, number>;
   muteds: MutedUser[];
   prefix: string;
-  db: Database;
+  prisma: PrismaClient;
   store: ReturnType<typeof makeInMemoryStore>;
   socket: WASocket;
-  default_example: string; // default number to show on examples: .mute {default_example}
+  default_example: string;
 }

@@ -36,3 +36,9 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 axo.db*
 store.json
 axo_auth/
+
+node_modules
+# Keep environment variables out of version control
+.env
+
+src/prisma/generated/prisma

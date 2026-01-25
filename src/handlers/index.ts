@@ -1,7 +1,11 @@
-import { getContentType, type WAMessage, type MessageUpsertType } from "baileys";
-import { logger } from "@/utils";
-import { message_handler } from "@/handlers/message";
+import {
+  getContentType,
+  type MessageUpsertType,
+  type WAMessage,
+} from "baileys";
 import { media_handler } from "@/handlers/media";
+import { message_handler } from "@/handlers/message";
+import { logger } from "@/utils";
 
 export const handlers_logger = logger.child({ module: "handlers" });
 
@@ -10,17 +14,24 @@ export type MessageHandlerType = {
   type: MessageUpsertType;
 };
 
-export const main_handler = async ({ messages, type }: MessageHandlerType): Promise<void> => {
+export const main_handler = async ({
+  messages,
+  type,
+}: MessageHandlerType): Promise<void> => {
   if (type !== "notify") return;
 
   for (const m of messages) {
     if (!m.message) continue;
     if (m.key.fromMe) continue;
 
+    handlers_logger.info("1");
+
     const content = m.message.ephemeralMessage?.message ?? m.message;
 
     const contentType = getContentType(content);
     if (!contentType) continue;
+
+    handlers_logger.info("2");
 
     let text: string | null | undefined;
 
@@ -42,6 +53,8 @@ export const main_handler = async ({ messages, type }: MessageHandlerType): Prom
         text = content.videoMessage?.caption;
         break;
     }
+
+    handlers_logger.info(text);
 
     if (text) {
       await message_handler({ m, text });

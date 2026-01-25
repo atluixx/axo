@@ -1,13 +1,20 @@
+import {
+  type BaileysEventEmitter,
+  makeInMemoryStore,
+} from "@adiwajshing/baileys";
 import makeWASocket, { Browsers } from "baileys";
-import { makeInMemoryStore, type BaileysEventEmitter } from "@adiwajshing/baileys";
 import pino from "pino";
-
 import { process_metadata } from "@/auth";
 import { connection_update } from "@/events";
-import { use_sqlite_auth, db } from "@/database";
 import { main_handler } from "@/handlers";
 import { mute_job } from "@/jobs";
-import { get_user_jid, load_commands_recursive, type Axo, type Command, type MutedUser } from "@/utils";
+import {
+  type Axo,
+  type Command,
+  get_user_jid,
+  load_commands_recursive,
+} from "@/utils";
+import { prisma, use_prisma_auth } from "@/utils/prisma";
 
 export let skt: ReturnType<typeof makeWASocket>;
 export let axo: Axo;
@@ -15,7 +22,7 @@ export let axo: Axo;
 const store = makeInMemoryStore({});
 
 export const start_socket = async () => {
-  const { state, save_creds } = await use_sqlite_auth();
+  const { state, save_creds } = await use_prisma_auth();
 
   skt = makeWASocket({
     auth: state,
@@ -28,12 +35,13 @@ export const start_socket = async () => {
 
   const commands = new Map<string, Command>();
   const timeouts = new Map<string, number>();
-  const muteds = db.query(`SELECT * FROM muted_users`).all() as MutedUser[];
+
+  const muteds = await prisma.mutedUser.findMany();
 
   axo = {
     find: get_user_jid,
     store,
-    db,
+    prisma,
     commands,
     timeouts,
     muteds,
@@ -52,14 +60,4 @@ export const start_socket = async () => {
   skt.ev.on("connection.update", connection_update);
 };
 
-const noop = () => {};
-
-console.info = noop;
-console.warn = noop;
-console.error = noop;
-
-await start_socket();
-
-setInterval(() => {
-  store.writeToFile("./store.json");
-}, 10_000);
+start_socket();

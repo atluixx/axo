@@ -1,14 +1,22 @@
+/** biome-ignore-all lint/style/noNonNullAssertion: scream */
+
 import { jidNormalizedUser } from "baileys";
 import type { MessageType } from ".";
 
-export const get_user_jid = ({ axo, m, t }: MessageType): string | undefined => {
+export const get_user_jid = ({
+  axo,
+  m,
+  t,
+}: MessageType): string | undefined => {
   const jid_quoted = m.message?.extendedTextMessage?.contextInfo?.participant;
-  const mentions = m.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
+  const mentions =
+    m.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
   const is_group = m.key.remoteJid?.endsWith("@g.us");
 
   if (jid_quoted) return jidNormalizedUser(jid_quoted);
   if (mentions.length) return jidNormalizedUser(mentions[0]);
-  if (!m.key.remoteJid?.endsWith("@g.us")) return jidNormalizedUser(m.key.remoteJid!);
+  if (!m.key.remoteJid?.endsWith("@g.us"))
+    return jidNormalizedUser(m.key.remoteJid!);
 
   const phone_match = t.match(/(?:\+?\d{10,15})/);
 

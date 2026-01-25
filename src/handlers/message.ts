@@ -1,17 +1,30 @@
 import { jidNormalizedUser, type WAMessage } from "baileys";
-import { handlers_logger } from ".";
 import { axo, skt } from "..";
+import { handlers_logger } from ".";
 import { command_handler } from "./command";
 
-const message_handler = async ({ m, text }: { m: WAMessage; text: string }): Promise<void> => {
+const message_handler = async ({
+  m,
+  text,
+}: {
+  m: WAMessage;
+  text: string;
+}): Promise<void> => {
+  // biome-ignore lint/style/noNonNullAssertion: there's no explanation
   const chat_jid = m.key.remoteJid!;
   const is_group = chat_jid.endsWith("@g.us");
-  const sender_jid = jidNormalizedUser(m.key.participant ?? m.key.remoteJidAlt ?? chat_jid);
+  const sender_jid = jidNormalizedUser(
+    m.key.participant ?? m.key.remoteJidAlt ?? chat_jid,
+  );
   const sender_name = m.pushName || sender_jid.split("@")[0];
 
-  const group_name = is_group ? (await skt.groupMetadata(chat_jid)).subject : "DMs";
+  const group_name = is_group
+    ? (await skt.groupMetadata(chat_jid)).subject
+    : "DMs";
 
   const normalized = text.trim();
+
+  handlers_logger.info(normalized);
 
   if (normalized.startsWith(axo.prefix)) {
     const withoutPrefix = normalized.slice(axo.prefix.length).trim();
@@ -23,6 +36,8 @@ const message_handler = async ({ m, text }: { m: WAMessage; text: string }): Pro
       m,
       text: withoutPrefix,
     });
+
+    handlers_logger.info({ withoutPrefix }, "command handler");
 
     return;
   }
